@@ -103,15 +103,14 @@ impl AsyncSecureChannel {
             };
 
             if should_renew_security_token {
-                let request = self.state.begin_issue_or_renew_secure_channel(
+                let token_renew_request = self.state.begin_issue_or_renew_secure_channel(
                     SecurityTokenRequestType::Renew,
                     Duration::from_secs(30),
                     send.clone(),
                 );
 
-                let resp = request.send().await?;
-
-                self.state.end_issue_or_renew_secure_channel(resp)?;
+                let renew_response = token_renew_request.send().await?;
+                self.state.end_issue_or_renew_secure_channel(renew_response)?;
             }
 
             drop(guard);

@@ -174,6 +174,7 @@ impl SecureChannel {
     }
 
     pub fn set_security_token(&mut self, channel_token: ChannelSecurityToken) {
+        // todo - save previous token in a private field
         self.secure_channel_id = channel_token.channel_id;
         self.token_id = channel_token.token_id;
         self.token_created_at = DateTime::now();
@@ -368,14 +369,6 @@ impl SecureChannel {
         trace!("Local nonce = {:?}", self.local_nonce);
         trace!("Derived remote keys = {:?}", self.remote_keys);
         trace!("Derived local keys = {:?}", self.local_keys);
-    }
-
-    /// Test if the token has expired yet
-    pub fn token_has_expired(&self) -> bool {
-        let token_created_at = self.token_created_at;
-        let token_expires =
-            token_created_at + TimeDelta::try_seconds(self.token_lifetime as i64).unwrap();
-        DateTime::now().ge(&token_expires)
     }
 
     /// Calculates the signature size for a message depending on the supplied security header
